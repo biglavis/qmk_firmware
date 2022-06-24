@@ -34,6 +34,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define RGB_DI_PIN B15
 #define RGBLED_NUM 3
+#define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+#define RGBLIGHT_SLEEP
+
 // Special timing definitions for KTR101
 #define WS2812_TIMING 1325
 #define WS2812_T0H 350

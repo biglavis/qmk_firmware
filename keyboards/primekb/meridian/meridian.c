@@ -23,46 +23,33 @@ void keyboard_pre_init_kb(void){
     keyboard_pre_init_user();
 }
 
-//Initialize all RGB indicators to 'off'
-__attribute__((weak))
-void keyboard_post_init_user(void) {
-    rgblight_setrgb_at(0, 0, 0, 0); // [..., 0] = top LED
-    rgblight_setrgb_at(0, 0, 0, 1); // [..., 1] = middle LED
-    rgblight_setrgb_at(0, 0, 0, 2); // [..., 2] = bottom LED
+//Update LED indicator
+void update_led(void){
+	if (biton32(layer_state)==1){
+		rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+        rgblight_sethsv_at(HSV_WHITE, 0);
+		rgblight_sethsv_at(0, 0, 0, 1);
+		rgblight_sethsv_at(0, 0, 0, 2);
+	} else if (host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK)) {
+		rgblight_sethsv_noeeprom(HSV_WHITE);
+		rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+	} else {
+		rgblight_sethsv_noeeprom(HSV_RED);
+		rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_SWIRL);
+	}
 }
 
-//Indicator light function
-bool led_update_kb(led_t led_state) {
-    bool res = led_update_user(led_state);
-    if (res) {
- //       writePin(B12, !led_state.caps_lock);  //Un-comment this line to enable in-switch capslock indicator
-    if (led_state.caps_lock) {
-        rgblight_setrgb_at(0, 255, 0, 0); //green
-    } else {
-        rgblight_setrgb_at(0, 0, 0, 0);
-    }
-    if (led_state.num_lock) {
-        rgblight_setrgb_at(0, 0, 255, 1); //blue
-    } else {
-        rgblight_setrgb_at(0, 0, 0, 1);
-    }
-   if (led_state.scroll_lock) {          
-        rgblight_setrgb_at(255, 0, 0, 2); //red
-    } else {
-        rgblight_setrgb_at(0, 0, 0, 2);
-    }
-}
-    return res;
+void led_set_user(uint8_t usb_led){
+	// must trigger to
+	// - activate capslock indicator
+	// - de-activate capslock indicator
+	update_led();
 }
 
-//Below is an exmaple of layer indication using one of the RGB indicatiors. As configured, uses the bottom indicator (2) to light up red when layer 1 is in use. 
-/*
-layer_state_t layer_state_set_kb(layer_state_t state) {
-    if (get_highest_layer(state) == 1) {
-        rgblight_setrgb_at(255, 0, 0, 2);
-    } else {
-        rgblight_setrgb_at(0, 0, 0, 2);
-    }
-    return state;
+uint32_t layer_state_set_user(uint32_t state){
+	// must trigger to
+	// - activate layer indicator
+	// - de-activate layer indicator
+	update_led();
+	return state;
 }
-*/

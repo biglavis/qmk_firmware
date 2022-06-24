@@ -39,6 +39,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define WS2812_SPI_SCK_PAL_MODE 0
 #define WS2812_SPI_SCK_PIN B13
 
+#define RGBLIGHT_SLEEP
+
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE    5
 
